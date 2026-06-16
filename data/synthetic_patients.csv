@@ -1,0 +1,151 @@
+id,name,age,gender,conditions,medication,dosage,adherence_score,refill_delay_days,barrier,phone,risk_label
+PAT1001,Elizabeth Wilson,30,Male,Hypertension,Lisinopril,10mg daily,0.62,13,Side effects,555-0189,High
+PAT1002,Robert Chen,57,Male,Depression,Sertraline,500mg daily,0.89,1,None,555-0148,Low
+PAT1003,Emily Rodriguez,36,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.84,4,Forgetfulness,555-0195,Medium
+PAT1004,Amanda Martinez,37,Male,Diabetes,Metformin,500mg twice daily,0.56,14,Side effects,555-0121,High
+PAT1005,Daniel Miller,55,Female,Diabetes,Metformin,500mg twice daily,0.48,19,Side effects,555-0119,High
+PAT1006,David Kim,82,Male,Hypertension,Lisinopril,10mg daily,0.6,3,Lack of symptoms,555-0197,High
+PAT1007,Amanda Martinez,73,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.96,3,None,555-0143,Low
+PAT1008,Michael Chang,34,Male,Depression,Sertraline,500mg daily,0.66,9,Side effects,555-0157,Medium
+PAT1009,Sarah Jenkins,56,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.58,8,Lack of symptoms,555-0198,High
+PAT1010,Linda Garcia,65,Female,Diabetes,Metformin,500mg twice daily,0.48,5,Side effects,555-0145,High
+PAT1011,Amanda Martinez,46,Female,,Multivitamin,1 tablet daily,0.42,8,Side effects,555-0178,High
+PAT1012,Daniel Miller,82,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.49,13,Side effects,555-0136,High
+PAT1013,Robert Chen,50,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.7,4,Forgetfulness,555-0113,Medium
+PAT1014,Christopher Moore,31,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.98,2,None,555-0173,Low
+PAT1015,Matthew Rodriguez,33,Male,Depression,Sertraline,500mg daily,0.67,10,Side effects,555-0154,Medium
+PAT1016,Matthew Rodriguez,80,Male,Diabetes,Metformin,500mg twice daily,0.47,13,Cost,555-0181,High
+PAT1017,William Brown,60,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.87,3,None,555-0133,Low
+PAT1018,Charles Taylor,25,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.92,0,None,555-0178,Low
+PAT1019,David Kim,43,Female,Depression,Sertraline,500mg daily,0.56,6,Lack of symptoms,555-0135,High
+PAT1020,Susan Anderson,56,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.82,4,Forgetfulness,555-0197,Medium
+PAT1021,Margaret Thomas,33,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.55,9,Lack of symptoms,555-0174,High
+PAT1022,Jessica Taylor,27,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.46,5,Cost,555-0166,High
+PAT1023,Sarah Jenkins,53,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.98,2,None,555-0120,Low
+PAT1024,Matthew Rodriguez,67,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.93,3,None,555-0159,Low
+PAT1025,David Kim,65,Male,Depression,Sertraline,500mg daily,0.5,12,Cost,555-0179,High
+PAT1026,Linda Garcia,35,Female,Hypertension,Lisinopril,10mg daily,0.91,3,None,555-0194,Low
+PAT1027,Elizabeth Wilson,38,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.74,5,Cost,555-0115,Medium
+PAT1028,Susan Anderson,28,Female,,Multivitamin,1 tablet daily,0.99,3,None,555-0130,Low
+PAT1029,Ashley Jackson,72,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.66,5,Cost,555-0161,Medium
+PAT1030,Sarah Jenkins,66,Female,,Multivitamin,1 tablet daily,0.83,5,Forgetfulness,555-0197,Medium
+PAT1031,Susan Anderson,53,Male,Diabetes,Metformin,500mg twice daily,0.43,11,Side effects,555-0183,High
+PAT1032,James Wilson,52,Female,Hypertension,Lisinopril,10mg daily,0.5,10,Side effects,555-0172,High
+PAT1033,Charles Taylor,53,Male,Hypertension,Lisinopril,10mg daily,0.93,1,None,555-0176,Low
+PAT1034,Linda Garcia,78,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.94,1,None,555-0152,Low
+PAT1035,Amanda Martinez,56,Female,Depression,Sertraline,500mg daily,0.69,7,Forgetfulness,555-0185,Medium
+PAT1036,Margaret Thomas,48,Male,Depression,Sertraline,500mg daily,0.77,10,Lack of symptoms,555-0160,Medium
+PAT1037,Daniel Miller,37,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.76,5,Forgetfulness,555-0195,Medium
+PAT1038,David Kim,29,Female,Diabetes,Metformin,500mg twice daily,0.95,2,None,555-0190,Low
+PAT1039,Matthew Rodriguez,76,Male,Diabetes,Metformin,500mg twice daily,0.91,1,None,555-0175,Low
+PAT1040,Jennifer Davis,38,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.85,0,None,555-0164,Low
+PAT1041,Joseph Thomas,53,Male,Hypertension,Lisinopril,10mg daily,0.86,1,None,555-0156,Low
+PAT1042,Matthew Rodriguez,43,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.93,1,None,555-0157,Low
+PAT1043,William Brown,50,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.52,6,Side effects,555-0123,High
+PAT1044,Robert Chen,59,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.89,3,None,555-0131,Low
+PAT1045,Margaret Thomas,44,Female,Hypertension,Lisinopril,10mg daily,0.98,2,None,555-0129,Low
+PAT1046,Jessica Taylor,41,Male,,Multivitamin,1 tablet daily,0.95,1,None,555-0160,Low
+PAT1047,Amanda Martinez,64,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.96,3,None,555-0175,Low
+PAT1048,Charles Taylor,53,Female,Hypertension,Lisinopril,10mg daily,0.7,9,Cost,555-0114,Medium
+PAT1049,Jennifer Davis,37,Male,Depression,Sertraline,500mg daily,0.97,2,None,555-0161,Low
+PAT1050,Ashley Jackson,66,Female,,Multivitamin,1 tablet daily,0.87,2,None,555-0138,Low
+PAT1051,Christopher Moore,42,Female,Depression,Sertraline,500mg daily,0.87,3,None,555-0198,Low
+PAT1052,Michael Chang,81,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.96,1,None,555-0151,Low
+PAT1053,Jessica Taylor,45,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.88,1,None,555-0122,Low
+PAT1054,Emily Rodriguez,42,Male,Depression,Sertraline,500mg daily,0.86,2,None,555-0191,Low
+PAT1055,Linda Garcia,40,Female,,Multivitamin,1 tablet daily,0.46,15,Cost,555-0157,High
+PAT1056,Robert Chen,41,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.69,4,Side effects,555-0187,Medium
+PAT1057,Ashley Jackson,76,Female,Hypertension,Lisinopril,10mg daily,0.87,1,None,555-0146,Low
+PAT1058,Elizabeth Wilson,80,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.45,6,Side effects,555-0165,High
+PAT1059,Jessica Taylor,50,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.63,14,Cost,555-0154,High
+PAT1060,Elizabeth Wilson,38,Female,Diabetes,Metformin,500mg twice daily,0.7,5,Forgetfulness,555-0110,Medium
+PAT1061,Daniel Miller,79,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.87,1,None,555-0141,Low
+PAT1062,David Kim,69,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.88,3,None,555-0167,Low
+PAT1063,Susan Anderson,79,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.98,2,None,555-0166,Low
+PAT1064,Jessica Taylor,37,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.9,2,None,555-0121,Low
+PAT1065,David Kim,58,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.65,2,Forgetfulness,555-0188,Medium
+PAT1066,Linda Garcia,51,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.98,3,None,555-0138,Low
+PAT1067,Michael Chang,48,Male,Hypertension,Lisinopril,10mg daily,0.89,2,None,555-0117,Low
+PAT1068,Robert Chen,66,Male,Hypertension,Lisinopril,10mg daily,0.74,5,Cost,555-0173,Medium
+PAT1069,Susan Anderson,36,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.4,5,Side effects,555-0169,High
+PAT1070,Ashley Jackson,72,Female,,Multivitamin,1 tablet daily,0.92,1,None,555-0160,Low
+PAT1071,Susan Anderson,62,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.97,0,None,555-0134,Low
+PAT1072,David Kim,61,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.85,1,None,555-0178,Low
+PAT1073,Jennifer Davis,82,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.94,2,None,555-0187,Low
+PAT1074,Sarah Jenkins,28,Male,Hypertension,Lisinopril,10mg daily,0.46,5,Cost,555-0182,High
+PAT1075,Amanda Martinez,70,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.9,0,None,555-0135,Low
+PAT1076,Amanda Martinez,76,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.95,3,None,555-0134,Low
+PAT1077,Jennifer Davis,71,Female,,Multivitamin,1 tablet daily,0.66,2,Forgetfulness,555-0178,Medium
+PAT1078,Jennifer Davis,38,Female,Diabetes,Metformin,500mg twice daily,0.93,1,None,555-0118,Low
+PAT1079,David Kim,27,Female,,Multivitamin,1 tablet daily,0.98,0,None,555-0199,Low
+PAT1080,Robert Chen,26,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.86,0,None,555-0197,Low
+PAT1081,Margaret Thomas,56,Female,Diabetes,Metformin,500mg twice daily,0.86,1,None,555-0111,Low
+PAT1082,Elizabeth Wilson,55,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.86,3,None,555-0126,Low
+PAT1083,David Kim,61,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.83,3,Forgetfulness,555-0134,Low
+PAT1084,Charles Taylor,67,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.86,0,None,555-0141,Low
+PAT1085,Linda Garcia,37,Male,,Multivitamin,1 tablet daily,0.41,16,Side effects,555-0110,High
+PAT1086,William Brown,66,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.85,2,None,555-0147,Low
+PAT1087,Amanda Martinez,77,Female,Hypertension,Lisinopril,10mg daily,0.62,3,Complexity,555-0137,High
+PAT1088,James Wilson,75,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.7,3,Forgetfulness,555-0132,Medium
+PAT1089,William Brown,54,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.33,15,Side effects,555-0136,High
+PAT1090,William Brown,32,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.98,3,None,555-0186,Low
+PAT1091,William Brown,50,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.87,2,None,555-0187,Low
+PAT1092,Charles Taylor,57,Male,Hypertension,Lisinopril,10mg daily,0.96,3,None,555-0169,Low
+PAT1093,Elizabeth Wilson,62,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.95,2,None,555-0173,Low
+PAT1094,Matthew Rodriguez,82,Male,Hypertension,Lisinopril,10mg daily,0.66,9,Cost,555-0158,Medium
+PAT1095,William Brown,50,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.69,5,Complexity,555-0159,Medium
+PAT1096,David Kim,57,Male,,Multivitamin,1 tablet daily,0.35,19,Side effects,555-0150,High
+PAT1097,Sarah Jenkins,39,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.75,7,Forgetfulness,555-0175,Medium
+PAT1098,Jessica Taylor,58,Male,Hypertension,Lisinopril,10mg daily,0.92,3,None,555-0148,Low
+PAT1099,Emily Rodriguez,35,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.9,3,None,555-0150,Low
+PAT1100,Elizabeth Wilson,28,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.71,5,Complexity,555-0173,Medium
+PAT1101,Daniel Miller,55,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.92,1,None,555-0129,Low
+PAT1102,David Kim,69,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.95,1,None,555-0141,Low
+PAT1103,Ashley Jackson,35,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.9,0,None,555-0151,Low
+PAT1104,Charles Taylor,55,Female,Hypertension,Lisinopril,10mg daily,0.67,15,Cost,555-0119,High
+PAT1105,James Wilson,51,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.77,2,Forgetfulness,555-0196,Medium
+PAT1106,Sarah Jenkins,53,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.61,6,Side effects,555-0129,High
+PAT1107,James Wilson,78,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.67,8,Lack of symptoms,555-0160,Medium
+PAT1108,Elizabeth Wilson,43,Female,Hypertension,Lisinopril,10mg daily,0.76,7,Forgetfulness,555-0187,Medium
+PAT1109,Emily Rodriguez,25,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.98,0,None,555-0192,Low
+PAT1110,Matthew Rodriguez,69,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.98,3,None,555-0170,Low
+PAT1111,Jennifer Davis,34,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.97,3,None,555-0124,Low
+PAT1112,Emily Rodriguez,48,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.87,1,None,555-0158,Low
+PAT1113,Amanda Martinez,34,Female,Diabetes,Metformin,500mg twice daily,0.97,0,None,555-0193,Low
+PAT1114,Emily Rodriguez,36,Female,Hypertension,Lisinopril,10mg daily,0.72,5,Forgetfulness,555-0129,Medium
+PAT1115,Sarah Jenkins,56,Male,,Multivitamin,1 tablet daily,0.56,10,Lack of symptoms,555-0142,High
+PAT1116,William Brown,55,Male,Depression,Sertraline,500mg daily,0.99,0,None,555-0135,Low
+PAT1117,Daniel Miller,46,Female,Depression,Sertraline,500mg daily,0.89,1,None,555-0115,Low
+PAT1118,Sarah Jenkins,47,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.98,0,None,555-0119,Low
+PAT1119,Jessica Taylor,56,Female,Diabetes,Metformin,500mg twice daily,0.77,4,Forgetfulness,555-0128,Medium
+PAT1120,Elizabeth Wilson,82,Male,Diabetes,Metformin,500mg twice daily,0.86,2,None,555-0142,Low
+PAT1121,Charles Taylor,48,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.56,7,Complexity,555-0180,High
+PAT1122,Margaret Thomas,73,Male,,Multivitamin,1 tablet daily,0.98,1,None,555-0130,Low
+PAT1123,James Wilson,36,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.86,0,None,555-0162,Low
+PAT1124,William Brown,37,Female,Hypertension,Lisinopril,10mg daily,0.92,3,None,555-0179,Low
+PAT1125,Christopher Moore,53,Male,Diabetes,Metformin,500mg twice daily,0.66,3,Lack of symptoms,555-0145,Medium
+PAT1126,Susan Anderson,59,Male,Diabetes,Metformin,500mg twice daily,0.87,0,None,555-0169,Low
+PAT1127,Daniel Miller,64,Female,Depression,Sertraline,500mg daily,0.97,2,None,555-0132,Low
+PAT1128,Sarah Jenkins,37,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.33,10,Side effects,555-0135,High
+PAT1129,William Brown,55,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.97,1,None,555-0176,Low
+PAT1130,Linda Garcia,82,Female,Hyperlipidemia,Atorvastatin,20mg daily,0.61,13,Cost,555-0182,High
+PAT1131,Michael Chang,54,Male,Hyperlipidemia,Atorvastatin,20mg daily,0.74,15,Cost,555-0144,High
+PAT1132,Michael Chang,59,Male,Depression,Sertraline,500mg daily,0.93,2,None,555-0166,Low
+PAT1133,Daniel Miller,72,Male,Hypertension,Lisinopril,10mg daily,0.69,5,Forgetfulness,555-0166,Medium
+PAT1134,Susan Anderson,74,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.95,3,None,555-0175,Low
+PAT1135,William Brown,33,Male,Depression,Sertraline,500mg daily,0.93,1,None,555-0164,Low
+PAT1136,Jessica Taylor,66,Male,Hypertension,Lisinopril,10mg daily,0.9,3,None,555-0129,Low
+PAT1137,Susan Anderson,55,Female,Asthma,Albuterol Inhaler,2 puffs as needed,1.0,2,None,555-0180,Low
+PAT1138,Daniel Miller,25,Male,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,1.0,1,None,555-0186,Low
+PAT1139,Michael Chang,36,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.89,1,None,555-0110,Low
+PAT1140,Jessica Taylor,73,Female,Hypertension,Lisinopril,10mg daily,0.91,1,None,555-0157,Low
+PAT1141,Linda Garcia,68,Female,,Multivitamin,1 tablet daily,0.9,2,None,555-0115,Low
+PAT1142,Ashley Jackson,75,Female,Asthma,Albuterol Inhaler,2 puffs as needed,0.84,6,Forgetfulness,555-0192,Medium
+PAT1143,Ashley Jackson,48,Female,Hypertension;Diabetes,Lisinopril,10mg daily,0.98,3,None,555-0187,Low
+PAT1144,James Wilson,73,Male,Hypertension;Diabetes,Lisinopril,10mg daily,0.87,2,None,555-0160,Low
+PAT1145,Susan Anderson,42,Female,Depression,Sertraline,500mg daily,0.79,9,Lack of symptoms,555-0143,Medium
+PAT1146,Ashley Jackson,44,Male,Asthma,Albuterol Inhaler,2 puffs as needed,0.95,1,None,555-0184,Low
+PAT1147,Matthew Rodriguez,65,Female,Hypertension;Hyperlipidemia,Lisinopril,10mg daily,0.98,3,None,555-0182,Low
+PAT1148,Joseph Thomas,56,Male,Depression,Sertraline,500mg daily,0.9,3,None,555-0120,Low
+PAT1149,Susan Anderson,57,Male,Hypertension,Lisinopril,10mg daily,0.89,2,None,555-0145,Low
+PAT1150,William Brown,38,Male,Hypertension,Lisinopril,10mg daily,0.65,4,Lack of symptoms,555-0129,Medium

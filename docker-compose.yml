@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: adherence_postgres
+    environment:
+      POSTGRES_USER: adherence_user
+      POSTGRES_PASSWORD: adherence_pass
+      POSTGRES_DB: adherence_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - adherence_pgdata:/var/lib/postgresql/data
+
+volumes:
+  adherence_pgdata:

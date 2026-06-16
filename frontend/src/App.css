@@ -1,0 +1,58 @@
+.app {
+  font-family: Arial, sans-serif;
+  padding: 32px;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  font-size: 42px;
+  line-height: 1.15;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card h2 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+}
+
+select {
+  padding: 10px;
+  min-width: 220px;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.grid {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.full {
+  grid-column: span 2;
+}
