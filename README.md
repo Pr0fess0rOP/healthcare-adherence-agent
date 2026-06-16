@@ -1,123 +1,719 @@
-# CareSync: Multi-Agent Medication Adherence System
+# Healthcare Adherence Multi-Agent System
 
-CareSync is a state-of-the-art multi-agent AI framework designed to monitor patient medication adherence, analyze compliance barriers, and deploy targeted interventions. 
+A full-stack multi-agent healthcare adherence demo that identifies medication non-adherence risk using synthetic patient data. The system uses a FastAPI backend, PostgreSQL database, LangGraph workflow orchestration, a scikit-learn risk prediction model, and a React dashboard.
 
-The system leverages a specialized multi-agent graph architecture, coordinating four distinct agent roles to automate patient safety audit loops.
+This project is built as a safe healthcare AI demo. It does not use real patient data or PHI. All patient records are synthetic.
 
 ---
 
-## Architecture Overview
+## What This Project Does
 
-The multi-agent workflow runs sequentially for each patient in the following state machine graph:
+This application simulates how a healthcare platform could monitor medication adherence risk.
 
-```mermaid
-graph TD
-    A[Patient Profile] --> B(Risk Agent)
-    B -->|Classifies Risk: Low/Med/High| C(Reasoning Agent)
-    C -->|Clinician Rationale| D{Action Router}
-    D -->|Forgetfulness / Complexity| E(Reminder Agent)
-    D -->|Cost / Side Effects| F(Refill Agent)
-    D -->|Critical Adherence Risk| G(Escalation Agent)
-    D -->|No Intervention Needed| H[Summary Agent]
-    E --> H
-    F --> H
-    G --> H
-    H -->|Update DB & Save Run| I[Finalized Report]
+The system allows a user to:
+
+1. View synthetic patients from a database.
+2. Select a patient in the React dashboard.
+3. Run a multi-agent adherence check.
+4. Predict the patient's non-adherence risk using a scikit-learn model.
+5. Check whether the medication refill is overdue or due soon.
+6. Generate a patient-friendly reminder message.
+7. Decide whether the patient should be escalated for care-team review.
+8. Generate a short care-team summary.
+9. Save the full agent trace into PostgreSQL.
+
+The main purpose is to demonstrate production-style AI architecture with clear separation between deterministic logic, machine learning, and multi-agent workflow orchestration.
+
+---
+
+## Tech Stack
+
+### Backend
+
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- LangGraph
+- scikit-learn
+- pandas
+- joblib
+- Uvicorn
+
+### Frontend
+
+- React
+- Vite
+- Axios
+- CSS
+
+### Infrastructure
+
+- Docker Compose for PostgreSQL
+
+---
+
+## Multi-Agent Workflow
+
+The system uses a LangGraph workflow with multiple specialized agents.
+
+```text
+Patient Data
+   |
+   v
+Risk Agent
+   |
+   v
+Refill Agent
+   |
+   v
+Reminder Agent
+   |
+   v
+Escalation Agent
+   |
+   v
+Summary Agent
 ```
 
-1. **Risk Agent**: Evaluates patient metrics (adherence history, age, refill delays) using a trained Random Forest Classifier to assign a risk score (Low, Medium, High).
-2. **Reasoning Agent**: Conducts clinical analysis of the patient's specific barrier (e.g., Side effects, Forgetfulness, Cost) and chooses the appropriate intervention.
-3. **Action Agents**:
-   - **Reminder Agent**: Dispatches personalized SMS notifications with tailored adherence tips.
-   - **Refill Agent**: Manages renewal options, checks for generic copay cards, and prompts refill confirmation.
-   - **Escalation Agent**: Immediately triggers clinical alarms, routing patient profiles to human Care Managers.
-4. **Summary Agent**: Compiles transaction logs, logs results in the audit trails, and commits updated states to the database.
+### 1. Risk Agent
+
+Uses a scikit-learn Logistic Regression model to estimate the patient's non-adherence risk.
+
+Inputs include:
+
+- Age
+- Last refill days ago
+- Medication supply days
+- Missed doses in the last 30 days
+- Prior non-adherence history
+
+Example output:
+
+```json
+{
+  "risk_score": 0.91,
+  "risk_level": "high",
+  "model_type": "LogisticRegression"
+}
+```
+
+---
+
+### 2. Refill Agent
+
+Checks whether the medication refill is:
+
+- `not_due`
+- `due_soon`
+- `overdue`
+
+Example output:
+
+```json
+{
+  "refill_status": "overdue",
+  "days_overdue": 11
+}
+```
+
+---
+
+### 3. Reminder Agent
+
+Generates a simple reminder message based on the patient's medication and refill status.
+
+Example:
+
+```text
+Hi, this is a reminder that your Atorvastatin refill may be overdue. Please check with your pharmacy or care team.
+```
+
+---
+
+### 4. Escalation Agent
+
+Decides whether the patient should be reviewed by the care team.
+
+Escalation is triggered when:
+
+- Risk level is high
+- Refill is overdue
+
+Example output:
+
+```json
+{
+  "escalate": true,
+  "priority": "high",
+  "reason": "Patient should be reviewed by care team"
+}
+```
+
+---
+
+### 5. Summary Agent
+
+Creates a short care-team summary.
+
+Example:
+
+```text
+Patient P1002 is at high risk for medication non-adherence. Refill status is overdue. Escalation required: true.
+```
 
 ---
 
 ## Folder Structure
 
-```
+```text
 healthcare-adherence-agent/
-│
+|
 ├── backend/
-│   ├── main.py                     # FastAPI entry point & API endpoints
-│   ├── requirements.txt            # Python dependencies
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── database.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── seed.py
+│   │   ├── __init__.py
+│   │   │
+│   │   ├── agents/
+│   │   │   ├── risk_agent.py
+│   │   │   ├── refill_agent.py
+│   │   │   ├── reminder_agent.py
+│   │   │   ├── escalation_agent.py
+│   │   │   └── summary_agent.py
+│   │   │
+│   │   ├── workflow/
+│   │   │   └── adherence_graph.py
+│   │   │
+│   │   └── ml/
+│   │       ├── train_model.py
+│   │       └── risk_model.pkl
 │   │
-│   ├── agents/                     # Multi-Agent logic
-│   │   ├── risk_agent.py           # Assesses patient adherence risk level
-│   │   ├── reasoning_agent.py      # Clinician reasoning to determine action
-│   │   ├── reminder_agent.py       # Custom SMS medication alerts
-│   │   ├── refill_agent.py         # Refill renewal and cost assistance handler
-│   │   ├── escalation_agent.py     # Critical provider alert routing
-│   │   └── summary_agent.py        # Compiles audit logs & updates SQLite database
-│   │
-│   ├── workflows/
-│   │   └── adherence_graph.py      # Sequentially orchestrates the agent state graph
-│   │
-│   ├── models/
-│   │   └── risk_model.pkl          # Trained Random Forest classifier binary
-│   │
-│   ├── schemas/
-│   │   └── patient_schema.py       # Pydantic schemas (Patient, Agent logs, Graph state)
-│   │
-│   ├── database/
-│   │   └── db.py                   # SQLite database connector & initializer
-│   │
-│   └── services/
-│       ├── notification_service.py # Mock SMS/Email/Escalation transmission
-│       └── audit_service.py        # Audit trail logging service
+│   └── requirements.txt
 │
 ├── frontend/
-│   ├── index.html                  # Single Page React App UI (CDN-based)
-│   └── style.css                   # Dark mode CSS with premium aesthetics
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   └── main.jsx
+│   │
+│   ├── package.json
+│   └── vite.config.js
 │
-├── data/
-│   └── synthetic_patients.csv      # Generated patient dataset (150 records)
-│
-└── README.md                       # Documentation & usage manual
+├── docker-compose.yml
+└── README.md
 ```
 
 ---
 
-## Setup & Running Guide
+## Backend Setup
 
-### 1. Backend API Server
-
-Ensure Python 3.8+ is installed. Navigate to the project root and install the dependencies:
+### 1. Open the project
 
 ```bash
-pip install -r backend/requirements.txt
+cd healthcare-adherence-agent
 ```
-
-Launch the FastAPI backend server:
-
-```bash
-python backend/main.py
-```
-The backend will run on `http://127.0.0.1:8000`. On startup, it automatically loads patient details from the synthetic CSV file into a local SQLite database (`backend/database/adherence.db`).
-
-### 2. Frontend Dashboard
-
-Since the React app is served via CDN, **no node compilation or local server is strictly required**. 
-
-* **Option A (Simplest)**: Double-click and open `frontend/index.html` in your web browser.
-* **Option B (Python Server)**: Keep a local dev environment by launching a lightweight python server at the project root:
-  ```bash
-  python -m http.server 3000 --directory frontend
-  ```
-  Navigate to `http://localhost:3000` in your browser.
 
 ---
 
-## Verification Plan
+### 2. Start PostgreSQL with Docker
 
-1. **Verify Backend Status**:
-   - Access `http://127.0.0.1:8000/` in your browser or client. You should receive a status dictionary: `{"message": "...", "status": "running"}`.
-   - Swagger interactive docs are available at `http://127.0.0.1:8000/docs`.
-2. **Execute Agent Audits**:
-   - Open the CareSync Dashboard.
-   - Select a patient from the sidebar (e.g. high-risk patient showing delayed refills or side-effect barriers).
-   - Click **"Run Adherence Audit"**. 
-   - Watch the multi-agent running panel animate and log outputs live as the Risk Agent, Reasoning Agent, Action Agent, and Summary Agent execute step-by-step.
-   - Inspect the **Active Dispatched Alerts** panel to see the mock SMS messages or provider escalations sent out.
+Make sure Docker Desktop is running.
+
+From the project root:
+
+```bash
+docker compose up -d
+```
+
+This starts a PostgreSQL container with:
+
+```text
+Database: adherence_db
+User: adherence_user
+Password: adherence_pass
+Port: 5432
+```
+
+---
+
+### 3. Create and activate Python virtual environment
+
+Go to the backend folder:
+
+```bash
+cd backend
+```
+
+Create virtual environment:
+
+```bash
+python -m venv venv
+```
+
+Activate it.
+
+For Windows PowerShell:
+
+```powershell
+venv\Scripts\activate
+```
+
+For Mac/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+---
+
+### 4. Install backend dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 5. Seed synthetic patient data
+
+From the `backend` folder:
+
+```bash
+python -m app.seed
+```
+
+Expected output:
+
+```text
+Seeded synthetic patients.
+```
+
+---
+
+### 6. Train the scikit-learn risk model
+
+From the `backend` folder:
+
+```bash
+python -m app.ml.train_model
+```
+
+Expected output:
+
+```text
+Model evaluation:
+...
+Saved model to: .../backend/app/ml/risk_model.pkl
+```
+
+This creates the model file used by the Risk Agent.
+
+---
+
+### 7. Run the FastAPI backend
+
+From the `backend` folder:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend will run at:
+
+```text
+http://localhost:8000
+```
+
+Swagger API docs are available at:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+## Frontend Setup
+
+Open a new terminal and go to the frontend folder:
+
+```bash
+cd healthcare-adherence-agent/frontend
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the React development server:
+
+```bash
+npm run dev
+```
+
+Frontend will usually run at:
+
+```text
+http://localhost:5173
+```
+
+If port `5173` is busy, Vite may run on:
+
+```text
+http://localhost:5174
+```
+
+Make sure the backend CORS settings include the frontend port.
+
+---
+
+## API Routes
+
+### Root Health Check
+
+```http
+GET /
+```
+
+Example response:
+
+```json
+{
+  "message": "Healthcare Adherence API is running"
+}
+```
+
+---
+
+### Get All Patients
+
+```http
+GET /patients
+```
+
+Returns all synthetic patients from PostgreSQL.
+
+Example response:
+
+```json
+[
+  {
+    "patient_id": "P1001",
+    "age": 45,
+    "medication": "Metformin",
+    "last_refill_days_ago": 22,
+    "supply_days": 30,
+    "missed_doses_last_30_days": 1,
+    "prior_non_adherence": false,
+    "preferred_contact": "sms"
+  }
+]
+```
+
+---
+
+### Run Multi-Agent Adherence Check
+
+```http
+POST /run-adherence-check/{patient_id}
+```
+
+Example:
+
+```http
+POST /run-adherence-check/P1002
+```
+
+Example response:
+
+```json
+{
+  "patient": {
+    "patient_id": "P1002",
+    "age": 67,
+    "medication": "Atorvastatin",
+    "last_refill_days_ago": 41,
+    "supply_days": 30,
+    "missed_doses_last_30_days": 6,
+    "prior_non_adherence": true,
+    "preferred_contact": "email"
+  },
+  "risk": {
+    "risk_score": 0.91,
+    "risk_level": "high",
+    "reasons": [
+      "Refill is overdue",
+      "High number of missed doses in last 30 days",
+      "Patient has prior non-adherence history",
+      "Patient is 65 or older",
+      "ML model estimated non-adherence probability at 0.91"
+    ],
+    "model_type": "LogisticRegression"
+  },
+  "refill": {
+    "refill_status": "overdue",
+    "days_overdue": 11
+  },
+  "reminder": {
+    "channel": "email",
+    "message": "Hi, this is a reminder that your Atorvastatin refill may be overdue. Please check with your pharmacy or care team.",
+    "risk_level": "high"
+  },
+  "escalation": {
+    "escalate": true,
+    "priority": "high",
+    "reason": "Patient should be reviewed by care team"
+  },
+  "summary": "Patient P1002 is at high risk for medication non-adherence. Refill status is overdue. Escalation required: True."
+}
+```
+
+This endpoint also saves the full agent trace into PostgreSQL.
+
+---
+
+### Get Saved Agent Runs
+
+```http
+GET /agent-runs
+```
+
+Returns all previous agent workflow runs stored in the database.
+
+Example response:
+
+```json
+[
+  {
+    "patient_id": "P1002",
+    "risk_score": 0.91,
+    "risk_level": "high",
+    "refill_status": "overdue",
+    "escalate": true,
+    "priority": "high",
+    "full_trace": {
+      "patient": {},
+      "risk": {},
+      "refill": {},
+      "reminder": {},
+      "escalation": {},
+      "summary": "..."
+    }
+  }
+]
+```
+
+---
+
+## How to Test the Project
+
+### 1. Confirm backend is running
+
+Open:
+
+```text
+http://localhost:8000
+```
+
+You should see:
+
+```json
+{
+  "message": "Healthcare Adherence API is running"
+}
+```
+
+---
+
+### 2. Confirm patient data exists
+
+Open:
+
+```text
+http://localhost:8000/patients
+```
+
+You should see patients like:
+
+```text
+P1001
+P1002
+P1003
+```
+
+If this returns an empty list, run:
+
+```bash
+python -m app.seed
+```
+
+---
+
+### 3. Run an agent workflow manually
+
+PowerShell:
+
+```powershell
+Invoke-RestMethod -Method POST -Uri "http://localhost:8000/run-adherence-check/P1002"
+```
+
+Or use Swagger:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+### 4. Test from React dashboard
+
+Open the frontend URL:
+
+```text
+http://localhost:5173
+```
+
+Then:
+
+1. Select a patient.
+2. Click `Run Agent Workflow`.
+3. Check the result cards:
+   - Risk Agent
+   - Refill Agent
+   - Reminder Agent
+   - Escalation Agent
+   - Care Summary
+
+---
+
+## Example Demo Flow
+
+Use patient `P1002`.
+
+This patient has:
+
+```text
+Age: 67
+Medication: Atorvastatin
+Last refill: 41 days ago
+Supply days: 30
+Missed doses: 6
+Prior non-adherence: true
+Preferred contact: email
+```
+
+Expected result:
+
+```text
+Risk Level: high
+Refill Status: overdue
+Escalation: true
+Priority: high
+```
+
+This is the best demo patient because it clearly triggers the full workflow.
+
+---
+
+## Database Tables
+
+### patients
+
+Stores synthetic patient records.
+
+Important fields:
+
+```text
+patient_id
+age
+medication
+last_refill_days_ago
+supply_days
+missed_doses_last_30_days
+prior_non_adherence
+preferred_contact
+```
+
+---
+
+### agent_runs
+
+Stores each multi-agent workflow execution.
+
+Important fields:
+
+```text
+patient_id
+risk_score
+risk_level
+refill_status
+escalate
+priority
+full_trace
+created_at
+```
+
+The `full_trace` field stores the complete output from every agent.
+
+---
+
+## Important Safety Note
+
+This project is for educational and portfolio purposes only.
+
+It uses synthetic healthcare data and does not process real patient health information.
+
+The system does not provide medical advice, diagnosis, or treatment recommendations. It only demonstrates how a multi-agent AI workflow could assist with adherence monitoring and care-team review workflows.
+
+---
+
+## Current Limitations
+
+- Uses synthetic data only.
+- Risk model is trained on a small handcrafted dataset.
+- Reminder messages are simulated and not actually sent.
+- No authentication or role-based access control yet.
+- No real EHR, pharmacy, or claims system integration.
+- No human approval workflow yet.
+
+---
+
+## Future Improvements
+
+Potential next steps:
+
+1. Add a larger synthetic dataset.
+2. Add model evaluation metrics dashboard.
+3. Add human-in-the-loop approval before escalation.
+4. Add Twilio SMS or email notification simulation.
+5. Add authentication and role-based access control.
+6. Add care coordinator dashboard for reviewing escalations.
+7. Add charts for risk trends and missed dose history.
+8. Deploy backend on AWS using Lambda or ECS.
+9. Deploy frontend on Vercel or AWS Amplify.
+10. Add audit logs for every agent decision.
+
+---
+
+## Resume Summary
+
+This project demonstrates:
+
+- Multi-agent AI system design
+- FastAPI backend development
+- PostgreSQL data modeling
+- LangGraph workflow orchestration
+- scikit-learn risk prediction
+- React dashboard development
+- Explainable agent traces
+- Healthcare AI safety awareness using synthetic data only
+
+Example resume bullet:
+
+```text
+Built a full-stack multi-agent healthcare adherence system using FastAPI, PostgreSQL, LangGraph, scikit-learn, and React to predict medication non-adherence risk, monitor refill status, generate patient reminders, and escalate high-risk cases with explainable agent traces.
+```

@@ -54,6 +54,7 @@ function App() {
             <h2>Risk Agent</h2>
             <p>Risk Score: {result.risk.risk_score}</p>
             <p>Risk Level: {result.risk.risk_level}</p>
+            <p>Model: {result.risk.model_type}</p>
             <ul>
               {result.risk.reasons.map((reason, index) => (
                 <li key={index}>{reason}</li>
