@@ -1,0 +1,22 @@
+[
+  {
+    "feature": "missed_doses_last_30_days",
+    "importance": 0.7805
+  },
+  {
+    "feature": "last_refill_days_ago",
+    "importance": 0.0961
+  },
+  {
+    "feature": "prior_non_adherence",
+    "importance": 0.0535
+  },
+  {
+    "feature": "supply_days",
+    "importance": 0.0533
+  },
+  {
+    "feature": "age",
+    "importance": 0.0165
+  }
+]

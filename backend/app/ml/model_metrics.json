@@ -1,16 +1,19 @@
 {
-    "model_type": "LogisticRegression",
-    "training_data_type": "synthetic",
-    "features": [
-        "age",
-        "last_refill_days_ago",
-        "supply_days",
-        "missed_doses_last_30_days",
-        "prior_non_adherence"
-    ],
-    "accuracy": 0.86,
-    "precision": 0.84,
-    "recall": 0.89,
-    "f1_score": 0.86,
-    "notes": "Metrics are based on a small synthetic demo dataset and are not intended for clinical use."
+  "model_type": "GradientBoostingClassifier",
+  "active_version": "v20260617T000948",
+  "training_data_type": "synthetic",
+  "training_rows": 3000,
+  "features": [
+    "age",
+    "last_refill_days_ago",
+    "supply_days",
+    "missed_doses_last_30_days",
+    "prior_non_adherence"
+  ],
+  "accuracy": 0.9453,
+  "precision": 0.9343,
+  "recall": 0.9176,
+  "f1_score": 0.9259,
+  "notes": "Synthetic demo model. Not intended for clinical use.",
+  "trained_at": "2026-06-17T00:09:48.433557+00:00"
 }

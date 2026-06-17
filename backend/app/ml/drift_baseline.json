@@ -1,0 +1,22 @@
+{
+  "age": {
+    "mean": 55.5893,
+    "std": 19.7313
+  },
+  "last_refill_days_ago": {
+    "mean": 39.5367,
+    "std": 23.7782
+  },
+  "supply_days": {
+    "mean": 41.28,
+    "std": 19.8719
+  },
+  "missed_doses_last_30_days": {
+    "mean": 4.0863,
+    "std": 2.8477
+  },
+  "prior_non_adherence": {
+    "mean": 0.2747,
+    "std": 0.4464
+  }
+}

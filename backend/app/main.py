@@ -13,6 +13,9 @@ from app.workflow.adherence_graph import build_adherence_graph
 from app.services.audit_service import create_audit_log
 from app.services.notification_service import queue_notification, update_notification_status
 
+import pandas as pd
+from app.ml.ml_utils import FEATURES, read_json_file, get_patient_feature_dataframe, load_cluster_assets
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HealthAgent Multi-Agent API")
@@ -143,10 +146,12 @@ def run_adherence_check(patient_id: str, db: Session = Depends(get_db)):
             "patient_id": patient.patient_id,
             "risk_level": result["risk"]["risk_level"],
             "risk_score": result["risk"]["risk_score"],
+            "segment": result.get("segment", {}).get("label"),
+            "intervention": result.get("intervention", {}).get("recommended_intervention"),
             "refill_status": refill_status,
             "escalate": escalation["escalate"],
             "review_status": review_status,
-            "workflow_type": "conditional_langgraph",
+            "workflow_type": "conditional_langgraph_with_ml_segmentation",
         },
     )
 
@@ -351,3 +356,241 @@ def get_patient_risk_history(patient_id: str, db: Session = Depends(get_db)):
         }
         for run in runs
     ]
+
+@app.get("/model/compare")
+def get_model_comparison():
+    data = read_json_file("model_comparison.json")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="Model comparison file not found")
+
+    return data
+
+
+@app.get("/model/feature-importance")
+def get_feature_importance():
+    data = read_json_file("feature_importance.json")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="Feature importance file not found")
+
+    return data
+
+
+@app.get("/model/registry")
+def get_model_registry():
+    data = read_json_file("model_registry.json")
+
+    if not data:
+        raise HTTPException(status_code=404, detail="Model registry file not found")
+
+    return data
+
+
+@app.get("/patients/{patient_id}/explanation")
+def get_patient_explanation(patient_id: str, db: Session = Depends(get_db)):
+    patient = db.query(Patient).filter(Patient.patient_id == patient_id).first()
+
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    patient_dict = {
+        "patient_id": patient.patient_id,
+        "age": patient.age,
+        "medication": patient.medication,
+        "last_refill_days_ago": patient.last_refill_days_ago,
+        "supply_days": patient.supply_days,
+        "missed_doses_last_30_days": patient.missed_doses_last_30_days,
+        "prior_non_adherence": patient.prior_non_adherence,
+        "preferred_contact": patient.preferred_contact,
+    }
+
+    result = adherence_graph.invoke({"patient": patient_dict})
+
+    return {
+        "patient_id": patient_id,
+        "risk": result.get("risk"),
+        "segment": result.get("segment"),
+        "intervention": result.get("intervention"),
+        "summary": result.get("summary"),
+    }
+
+
+@app.get("/patients/segments")
+def get_patient_segments(db: Session = Depends(get_db)):
+    patients = db.query(Patient).all()
+
+    if not patients:
+        return []
+
+    cluster_model, scaler = load_cluster_assets()
+
+    results = []
+
+    segment_labels = {
+        0: "Stable adherence profile",
+        1: "Refill delay monitor",
+        2: "Missed-dose support needed",
+        3: "High-touch adherence support",
+    }
+
+    for patient in patients:
+        features = get_patient_feature_dataframe(patient)
+        scaled = scaler.transform(features)
+        cluster_id = int(cluster_model.predict(scaled)[0])
+
+        results.append(
+            {
+                "patient_id": patient.patient_id,
+                "medication": patient.medication,
+                "segment_id": cluster_id,
+                "segment": segment_labels.get(cluster_id, "General adherence monitoring"),
+            }
+        )
+
+    return results
+
+
+@app.get("/patients/{patient_id}/intervention")
+def get_patient_intervention(patient_id: str, db: Session = Depends(get_db)):
+    patient = db.query(Patient).filter(Patient.patient_id == patient_id).first()
+
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    patient_dict = {
+        "patient_id": patient.patient_id,
+        "age": patient.age,
+        "medication": patient.medication,
+        "last_refill_days_ago": patient.last_refill_days_ago,
+        "supply_days": patient.supply_days,
+        "missed_doses_last_30_days": patient.missed_doses_last_30_days,
+        "prior_non_adherence": patient.prior_non_adherence,
+        "preferred_contact": patient.preferred_contact,
+    }
+
+    result = adherence_graph.invoke({"patient": patient_dict})
+
+    return {
+        "patient_id": patient_id,
+        "risk": result.get("risk"),
+        "segment": result.get("segment"),
+        "intervention": result.get("intervention"),
+    }
+
+
+@app.get("/patients/{patient_id}/risk-forecast")
+def get_patient_risk_forecast(patient_id: str, db: Session = Depends(get_db)):
+    patient = db.query(Patient).filter(Patient.patient_id == patient_id).first()
+
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    runs = (
+        db.query(AgentRun)
+        .filter(AgentRun.patient_id == patient_id)
+        .order_by(AgentRun.created_at.asc())
+        .all()
+    )
+
+    if not runs:
+        return {
+            "patient_id": patient_id,
+            "current_risk": None,
+            "forecast_14_day_risk": None,
+            "trend": "insufficient_history",
+            "message": "Run at least one adherence check first.",
+        }
+
+    current_risk = float(runs[-1].risk_score)
+
+    if len(runs) >= 2:
+        previous_risk = float(runs[-2].risk_score)
+        delta = current_risk - previous_risk
+    else:
+        refill_delay = max(0, patient.last_refill_days_ago - patient.supply_days)
+        delta = 0.04 if refill_delay > 0 or patient.missed_doses_last_30_days >= 5 else -0.02
+
+    forecast = max(0.0, min(1.0, current_risk + delta))
+
+    if forecast > current_risk + 0.03:
+        trend = "increasing"
+    elif forecast < current_risk - 0.03:
+        trend = "decreasing"
+    else:
+        trend = "stable"
+
+    return {
+        "patient_id": patient_id,
+        "current_risk": round(current_risk, 2),
+        "forecast_14_day_risk": round(forecast, 2),
+        "trend": trend,
+        "method": "simple trend + refill/missed-dose heuristic",
+    }
+
+
+@app.get("/model/drift")
+def get_model_drift(db: Session = Depends(get_db)):
+    baseline = read_json_file("drift_baseline.json")
+
+    if not baseline:
+        raise HTTPException(status_code=404, detail="Drift baseline file not found")
+
+    patients = db.query(Patient).all()
+
+    if not patients:
+        return {
+            "drift_detected": False,
+            "drifted_features": [],
+            "message": "No patient data available for drift check.",
+        }
+
+    live_rows = []
+
+    for patient in patients:
+        live_rows.append(
+            {
+                "age": patient.age,
+                "last_refill_days_ago": patient.last_refill_days_ago,
+                "supply_days": patient.supply_days,
+                "missed_doses_last_30_days": patient.missed_doses_last_30_days,
+                "prior_non_adherence": int(patient.prior_non_adherence),
+            }
+        )
+
+    live_df = pd.DataFrame(live_rows, columns=FEATURES)
+
+    drifted_features = []
+    feature_checks = []
+
+    for feature in FEATURES:
+        live_mean = float(live_df[feature].mean())
+        train_mean = float(baseline[feature]["mean"])
+        train_std = max(float(baseline[feature]["std"]), 1e-6)
+
+        z_delta = abs(live_mean - train_mean) / train_std
+        drifted = z_delta >= 1.5
+
+        if drifted:
+            drifted_features.append(feature)
+
+        feature_checks.append(
+            {
+                "feature": feature,
+                "training_mean": round(train_mean, 4),
+                "live_mean": round(live_mean, 4),
+                "z_delta": round(z_delta, 4),
+                "drifted": drifted,
+            }
+        )
+
+    return {
+        "drift_detected": len(drifted_features) > 0,
+        "drifted_features": drifted_features,
+        "feature_checks": feature_checks,
+        "recommendation": (
+            "Retrain model with newer data distribution."
+            if drifted_features
+            else "No major drift detected."
+        ),
+    }

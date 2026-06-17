@@ -1,7 +1,16 @@
 import os
+
 import joblib
 import pandas as pd
 
+
+FEATURES = [
+    "age",
+    "last_refill_days_ago",
+    "supply_days",
+    "missed_doses_last_30_days",
+    "prior_non_adherence",
+]
 
 MODEL_PATH = os.path.join(
     os.path.dirname(__file__),
@@ -13,31 +22,83 @@ MODEL_PATH = os.path.join(
 model = joblib.load(MODEL_PATH)
 
 
-def build_reasons(patient: dict, risk_score: float) -> list[str]:
-    reasons = []
+def build_top_factors(patient: dict) -> list[dict]:
+    factors = []
 
-    if patient["last_refill_days_ago"] > patient["supply_days"]:
-        reasons.append("Refill is overdue")
+    refill_delay = patient["last_refill_days_ago"] - patient["supply_days"]
 
-    if patient["missed_doses_last_30_days"] > 5:
-        reasons.append("High number of missed doses in last 30 days")
-
-    if patient["prior_non_adherence"]:
-        reasons.append("Patient has prior non-adherence history")
-
-    if patient["age"] >= 65:
-        reasons.append("Patient is 65 or older")
-
-    if not reasons:
-        reasons.append(
-            "Model predicted lower risk based on refill timing, missed doses, age, and prior adherence history"
+    if patient["missed_doses_last_30_days"] >= 6:
+        factors.append(
+            {
+                "factor": "missed_doses_last_30_days",
+                "value": patient["missed_doses_last_30_days"],
+                "impact": "high",
+                "explanation": "Patient has a high number of missed doses in the last 30 days.",
+            }
+        )
+    elif patient["missed_doses_last_30_days"] >= 3:
+        factors.append(
+            {
+                "factor": "missed_doses_last_30_days",
+                "value": patient["missed_doses_last_30_days"],
+                "impact": "medium",
+                "explanation": "Patient has a moderate number of missed doses.",
+            }
         )
 
-    reasons.append(
-        f"ML model estimated non-adherence probability at {round(risk_score, 2)}"
-    )
+    if refill_delay > 7:
+        factors.append(
+            {
+                "factor": "last_refill_days_ago",
+                "value": patient["last_refill_days_ago"],
+                "impact": "high",
+                "explanation": "Medication refill appears significantly overdue.",
+            }
+        )
+    elif refill_delay > 0:
+        factors.append(
+            {
+                "factor": "last_refill_days_ago",
+                "value": patient["last_refill_days_ago"],
+                "impact": "medium",
+                "explanation": "Medication refill appears slightly overdue.",
+            }
+        )
 
-    return reasons
+    if patient["prior_non_adherence"]:
+        factors.append(
+            {
+                "factor": "prior_non_adherence",
+                "value": True,
+                "impact": "medium",
+                "explanation": "Patient has previous non-adherence history.",
+            }
+        )
+
+    if patient["age"] >= 65:
+        factors.append(
+            {
+                "factor": "age",
+                "value": patient["age"],
+                "impact": "low",
+                "explanation": "Older patients may require more adherence support.",
+            }
+        )
+
+    if not factors:
+        factors.append(
+            {
+                "factor": "overall_profile",
+                "value": "stable",
+                "impact": "low",
+                "explanation": "Patient profile does not show major adherence risk drivers.",
+            }
+        )
+
+    impact_order = {"high": 3, "medium": 2, "low": 1}
+    factors.sort(key=lambda item: impact_order[item["impact"]], reverse=True)
+
+    return factors[:4]
 
 
 def risk_agent(state: dict) -> dict:
@@ -52,7 +113,8 @@ def risk_agent(state: dict) -> dict:
                 "missed_doses_last_30_days": patient["missed_doses_last_30_days"],
                 "prior_non_adherence": int(patient["prior_non_adherence"]),
             }
-        ]
+        ],
+        columns=FEATURES,
     )
 
     risk_score = float(model.predict_proba(features)[0][1])
@@ -64,11 +126,16 @@ def risk_agent(state: dict) -> dict:
     else:
         risk_level = "low"
 
+    top_factors = build_top_factors(patient)
+    reasons = [factor["explanation"] for factor in top_factors]
+    reasons.append(f"ML model estimated non-adherence probability at {round(risk_score, 2)}.")
+
     return {
         "risk": {
             "risk_score": round(risk_score, 2),
             "risk_level": risk_level,
-            "reasons": build_reasons(patient, risk_score),
-            "model_type": "LogisticRegression",
+            "reasons": reasons,
+            "top_factors": top_factors,
+            "model_type": model.__class__.__name__,
         }
     }

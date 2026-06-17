@@ -1,0 +1,27 @@
+{
+  "best_model": "GradientBoostingClassifier",
+  "selected_by": "f1_score",
+  "models": [
+    {
+      "model": "LogisticRegression",
+      "accuracy": 0.9173,
+      "precision": 0.8945,
+      "recall": 0.8817,
+      "f1_score": 0.8881
+    },
+    {
+      "model": "RandomForestClassifier",
+      "accuracy": 0.9387,
+      "precision": 0.8949,
+      "recall": 0.9462,
+      "f1_score": 0.9199
+    },
+    {
+      "model": "GradientBoostingClassifier",
+      "accuracy": 0.9453,
+      "precision": 0.9343,
+      "recall": 0.9176,
+      "f1_score": 0.9259
+    }
+  ]
+}
