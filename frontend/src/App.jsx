@@ -58,6 +58,16 @@ function App() {
   const highRiskCount = agentRuns.filter((run) => run.risk_level === "high").length;
   const escalationCount = agentRuns.filter((run) => run.escalate === true).length;
 
+  const safeRefill = result?.refill || {
+    refill_status: "not_checked",
+  };
+
+  const safeEscalation = result?.escalation || {
+    escalate: false,
+    priority: "normal",
+    reason: "Escalation was not required based on risk level",
+  };
+
   return (
     <div className="site">
       <header className="navbar">
@@ -323,12 +333,18 @@ function App() {
                 <article className="agent-small-card">
                   <div className="agent-number">02</div>
                   <h3>Refill Agent</h3>
-                  <strong className="big-word">{result.refill.refill_status}</strong>
-                  {"days_overdue" in result.refill && (
-                    <p>{result.refill.days_overdue} days overdue</p>
+                  <strong className="big-word">{safeRefill.refill_status}</strong>
+
+                  {"days_overdue" in safeRefill && (
+                    <p>{safeRefill.days_overdue} days overdue</p>
                   )}
-                  {"days_until_due" in result.refill && (
-                    <p>{result.refill.days_until_due} days until due</p>
+
+                  {"days_until_due" in safeRefill && (
+                    <p>{safeRefill.days_until_due} days until due</p>
+                  )}
+
+                  {safeRefill.refill_status === "not_checked" && (
+                    <p>Refill check was skipped for this risk level.</p>
                   )}
                 </article>
 
@@ -343,9 +359,9 @@ function App() {
                   <div className="agent-number">04</div>
                   <h3>Escalation Agent</h3>
                   <strong className="big-word">
-                    {result.escalation.escalate ? "Escalate" : "No Escalation"}
+                    {safeEscalation.escalate ? "Escalate" : "No Escalation"}
                   </strong>
-                  <p>{result.escalation.reason}</p>
+                  <p>{safeEscalation.reason}</p>
                 </article>
               </div>
 

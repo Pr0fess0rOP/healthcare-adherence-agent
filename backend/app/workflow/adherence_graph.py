@@ -18,6 +18,24 @@ class AdherenceState(TypedDict, total=False):
     summary: str
 
 
+def route_after_risk(state: AdherenceState) -> str:
+    risk_level = state["risk"]["risk_level"]
+
+    if risk_level == "low":
+        return "reminder_agent"
+
+    return "refill_agent"
+
+
+def route_after_reminder(state: AdherenceState) -> str:
+    risk_level = state["risk"]["risk_level"]
+
+    if risk_level == "high":
+        return "escalation_agent"
+
+    return "summary_agent"
+
+
 def build_adherence_graph():
     graph = StateGraph(AdherenceState)
 
@@ -29,9 +47,26 @@ def build_adherence_graph():
 
     graph.set_entry_point("risk_agent")
 
-    graph.add_edge("risk_agent", "refill_agent")
+    graph.add_conditional_edges(
+        "risk_agent",
+        route_after_risk,
+        {
+            "refill_agent": "refill_agent",
+            "reminder_agent": "reminder_agent",
+        },
+    )
+
     graph.add_edge("refill_agent", "reminder_agent")
-    graph.add_edge("reminder_agent", "escalation_agent")
+
+    graph.add_conditional_edges(
+        "reminder_agent",
+        route_after_reminder,
+        {
+            "escalation_agent": "escalation_agent",
+            "summary_agent": "summary_agent",
+        },
+    )
+
     graph.add_edge("escalation_agent", "summary_agent")
     graph.add_edge("summary_agent", END)
 

@@ -1,32 +1,78 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, JSON, ForeignKey
-from sqlalchemy.sql import func
-
-from app.database import Base
-
-
-class Patient(Base):
-    __tablename__ = "patients"
-
-    id = Column(Integer, primary_key=True, index=True)
-    patient_id = Column(String, unique=True, index=True)
-    age = Column(Integer)
-    medication = Column(String)
-    last_refill_days_ago = Column(Integer)
-    supply_days = Column(Integer)
-    missed_doses_last_30_days = Column(Integer)
-    prior_non_adherence = Column(Boolean)
-    preferred_contact = Column(String)
+from pydantic import BaseModel
+from typing import Any, Optional
+from datetime import datetime
 
 
-class AgentRun(Base):
-    __tablename__ = "agent_runs"
+class PatientResponse(BaseModel):
+    patient_id: str
+    age: int
+    medication: str
+    last_refill_days_ago: int
+    supply_days: int
+    missed_doses_last_30_days: int
+    prior_non_adherence: bool
+    preferred_contact: str
 
-    id = Column(Integer, primary_key=True, index=True)
-    patient_id = Column(String, ForeignKey("patients.patient_id"))
-    risk_score = Column(Float)
-    risk_level = Column(String)
-    refill_status = Column(String)
-    escalate = Column(Boolean)
-    priority = Column(String)
-    full_trace = Column(JSON)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    class Config:
+        from_attributes = True
+
+
+class AgentRunResponse(BaseModel):
+    id: int
+    patient_id: str
+    risk_score: float
+    risk_level: str
+    refill_status: str
+    escalate: bool
+    priority: str
+    review_status: str
+    review_notes: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
+    full_trace: dict[str, Any]
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ReviewRequest(BaseModel):
+    review_status: str  # approved or rejected
+    review_notes: Optional[str] = None
+
+
+class DashboardSummary(BaseModel):
+    total_patients: int
+    total_agent_runs: int
+    high_risk_runs: int
+    medium_risk_runs: int
+    low_risk_runs: int
+    pending_reviews: int
+    approved_reviews: int
+    rejected_reviews: int
+    queued_notifications: int
+
+
+class NotificationResponse(BaseModel):
+    id: int
+    patient_id: str
+    agent_run_id: Optional[int] = None
+    channel: str
+    message: str
+    status: str
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class AuditLogResponse(BaseModel):
+    id: int
+    action: str
+    entity_type: str
+    entity_id: Optional[str] = None
+    details: Optional[dict[str, Any]] = None
+    created_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
